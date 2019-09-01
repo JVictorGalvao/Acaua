@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+FILE *listadecidades;
+
 void bemvindo(){
     puts("BEM VINDO AO CONTROLADOR DE PLACAS FOTOVOLTAICAS");
 }
@@ -16,6 +18,26 @@ char concatenarlink (char* id){
     return printf("%s\n", link);
 }
 
+void abriraquivo(){
+    listadecidades = fopen("city.list.json", "r");
+    if (listadecidades == NULL){
+        puts("Houve um erro ao abrir o arquivo");
+    }else{
+        puts("Arquivo aberto com sucesso");
+    }
+}
+int contalinhas(FILE *arquivo){
+    char ch;
+    int num = 0;
+    while( (ch=fgetc(arquivo))!= EOF ){
+        if(ch == '\n')
+            num++;
+    }
+    return printf("%d\n", num+1);
+}
+void fechararquivo(){
+    fclose (listadecidades);
+}
 
 int main (void)
 {
@@ -24,7 +46,13 @@ int main (void)
     
     bemvindo();
 
+    abriraquivo();
+
+    contalinhas(listadecidades);
+
     scanf("%s", id);
+
+    fechararquivo();
 
     concatenarlink(id);
 
