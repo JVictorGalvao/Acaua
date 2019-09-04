@@ -9,7 +9,7 @@ void bemvindo(){
 }
 char concatenarlink (char* id){
     
-    char link [96] = "http://api.openweathermap.org/data/2.5/weather?id=";
+    char link [97] = "http://api.openweathermap.org/data/2.5/weather?id=";
     char apikey [] = "&appid=7d103cfe921d9a5bfcf551a90513f265";
 
     strcat(link,id);
@@ -39,18 +39,32 @@ void fechararquivo(){
     fclose (listadecidades);
 }
 
+char organizaBusca(char *buscaCidade){
+    int i;
+    // a-z 97-122 A-Z 65 - 90
+    if(buscaCidade[0] >= 'a' && buscaCidade[0] <= 'z'){
+        buscaCidade[0] -= 32;
+        }
+    return     printf("%s\n", buscaCidade);
+}
+
 int main (void)
 {
     //Variáveis
-    char id [8];
-    
+    char id [8] = {"12354"};
+    char buscaCidade [50];
+
     bemvindo();
 
     abriraquivo();
 
     contalinhas(listadecidades);
 
-    scanf("%s", id);
+    scanf("%s", buscaCidade);
+    organizaBusca(buscaCidade);
+
+
+    //scanf("%s", id);
 
     fechararquivo();
 
