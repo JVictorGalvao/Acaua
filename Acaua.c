@@ -3,7 +3,6 @@
 #include <string.h>
 
 FILE *listadecidades;
-FILE *Listadecidades;
 
 void bemvindo(){
     puts("BEM VINDO AO CONTROLADOR DE PLACAS FOTOVOLTAICAS");
@@ -20,7 +19,7 @@ char concatenarlink (char* id){
 }
 
 void abriraquivo(){
-    listadecidades = fopen("city.list.json", "r");
+    listadecidades = fopen("Listadecidades.txt", "r");
     if (listadecidades == NULL){
         puts("Houve um erro ao abrir o arquivo");
     }else{
@@ -40,51 +39,20 @@ void fechararquivo(){
     fclose (listadecidades);
 }
 
-char organizaBusca(char *buscaCidade){
-    int i;
-    // a-z 97-122 A-Z 65 - 90
-    if(buscaCidade[0] >= 'a' && buscaCidade[0] <= 'z'){
-        buscaCidade[0] -= 32;
-        }
-    return     printf("%s\n", buscaCidade);
-}
-
-/*char buscaNoArquivo(FILE *arquivo){
-    char cidade[2000000];
-    int i;
-    for(i=0; i<10; i++){
-        fscanf(listadecidades,"%s", &cidade[i]);
-        printf("%s\n", cidade[i]);  
-    }
-}*/
-
 
 int main (void)
 {
     //Variáveis
-    char id [8] = {"12354"};
-    char buscaCidade [50], c;
+    char id [8];
 
 
     bemvindo();
 
     abriraquivo();
 
-   // buscaNoArquivo(listadecidades);
-    Listadecidades = fopen("Listadecidades.txt", "w");
-   while(!feof(listadecidades)){
-        fscanf(listadecidades, "%c", &c);
-        fprintf(Listadecidades, "%c", c);
-    }
-
-
     contalinhas(listadecidades);
 
-   // scanf("%[^\n]s", buscaCidade);
-    //organizaBusca(buscaCidade);
-    
-
-    //scanf("%s", id);
+    scanf("%s", id);
 
     fechararquivo();
 
