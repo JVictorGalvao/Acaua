@@ -3,6 +3,7 @@
 #include <string.h>
 
 FILE *listadecidades;
+FILE *Listadecidades;
 
 void bemvindo(){
     puts("BEM VINDO AO CONTROLADOR DE PLACAS FOTOVOLTAICAS");
@@ -48,21 +49,40 @@ char organizaBusca(char *buscaCidade){
     return     printf("%s\n", buscaCidade);
 }
 
+/*char buscaNoArquivo(FILE *arquivo){
+    char cidade[2000000];
+    int i;
+    for(i=0; i<10; i++){
+        fscanf(listadecidades,"%s", &cidade[i]);
+        printf("%s\n", cidade[i]);  
+    }
+}*/
+
+
 int main (void)
 {
     //Variáveis
     char id [8] = {"12354"};
-    char buscaCidade [50];
+    char buscaCidade [50], c;
+
 
     bemvindo();
 
     abriraquivo();
 
+   // buscaNoArquivo(listadecidades);
+    Listadecidades = fopen("Listadecidades.txt", "w");
+   while(!feof(listadecidades)){
+        fscanf(listadecidades, "%c", &c);
+        fprintf(Listadecidades, "%c", c);
+    }
+
+
     contalinhas(listadecidades);
 
-    scanf("%s", buscaCidade);
-    organizaBusca(buscaCidade);
-
+   // scanf("%[^\n]s", buscaCidade);
+    //organizaBusca(buscaCidade);
+    
 
     //scanf("%s", id);
 
