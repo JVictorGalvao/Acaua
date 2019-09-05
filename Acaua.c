@@ -44,6 +44,7 @@ int main (void)
 {
     //Variáveis
     char id [8];
+    char linhas[100];
 
 
     bemvindo();
@@ -52,12 +53,18 @@ int main (void)
 
     contalinhas(listadecidades);
 
+    listadecidades = fopen("Listadecidades.txt", "r");
+
+    while(fgets(linhas, 100, listadecidades) != NULL){
+        printf("%s\n", linhas);
+    }
+    
+    
     scanf("%s", id);
 
     fechararquivo();
 
     concatenarlink(id);
-
-
+    
     return 0;
 }
