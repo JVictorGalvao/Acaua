@@ -21,10 +21,11 @@ int main (void){
         puts("Arquivo aberto com sucesso");
     }
     
-    while((caracter = fgetc(listadecidades)) != EOF){
-        if(caracter >= 'A' && caracter <= 'Z' || caracter >= 'a' && caracter <='z'|| caracter == '\n'|| caracter >= '0' && caracter <= '9' || caracter == ' ' || caracter == ':')
+    while((caracter = fgetc(listadecidades)) != EOF){  
+        if(caracter >= 'A' && caracter <= 'Z' || caracter >= 'a' && caracter <='z'|| caracter == '\n'|| caracter >= '0' && caracter <= '9')
         fprintf(listaatualizada, "%c", caracter);
     }
+  
 
     return 0;
 }
