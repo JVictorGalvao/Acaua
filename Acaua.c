@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "cJSON.h"
 
 FILE *listadecidades;
 
 void bemvindo(){
     puts("BEM VINDO AO CONTROLADOR DE PLACAS FOTOVOLTAICAS");
 }
-char concatenarlink (char* id){
+char concatenarlink (char *id){
     
     char link [97] = "http://api.openweathermap.org/data/2.5/weather?id=";
     char apikey [] = "&appid=7d103cfe921d9a5bfcf551a90513f265";
@@ -43,9 +44,16 @@ void fechararquivo(){
 int main (void)
 {
     //Variáveis
-    char id [8];
+    char compara[30];
     char linhas[100];
+    typedef struct {
+        char id [8];
+        char cidade[30];
+        char pais[3];
+    } tCidade;
 
+    tCidade cidade = {"3397277","Joao Pessoa", "BR"};
+    
 
     bemvindo();
 
@@ -60,11 +68,23 @@ int main (void)
     }
     
     
-    scanf("%s", id);
+   // scanf("%s", id);
 
     fechararquivo();
 
-    concatenarlink(id);
+    concatenarlink(cidade.id);
     
     return 0;
+}
+
+
+
+switch (i)
+{
+case 1:
+    /* code */
+    break;
+
+default:
+    break;
 }
