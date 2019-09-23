@@ -76,15 +76,3 @@ int main (void)
     
     return 0;
 }
-
-
-
-switch (i)
-{
-case 1:
-    /* code */
-    break;
-
-default:
-    break;
-}
