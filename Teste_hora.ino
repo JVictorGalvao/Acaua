@@ -9,27 +9,46 @@
 #define IN2 4 //LOW
 #define IN3 14 //HIGH
 #define IN4 12 //HIGH
+#define PIN_SENSOR 17 //ANALOGICO
+
+#define R1  30000.0
+#define R2  7500.0
+#define ARDUINO_V 3.3
+#define ANALOG_MAX 1023
 
 
-const char *ssid     = "Galvao";
-const char *password = "mariaepedro";
-String payload;
-
+  const char *ssid     = "eu";
+  const char *password = "senhasenha";
+  String payload;
   static char stepTimeUtc[32];
-
   long sys_sunrise;
   long sys_sunset;
   long timetostep;
   long stepTime;
   long passo;
-  
-const long utcOffsetInSeconds = -10800;
+  const long utcOffsetInSeconds = -10800;
+  float inputV = 0.0;
+  float averageV = 0.0;
+  int readSensor = 0;
 
 
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "a.st1.ntp.br", utcOffsetInSeconds);
 String hora;//Váriavel que armazenara o horario do NTP.
+
+float sensorVoltage(int readSensor){
+  inputV = (readSensor * ARDUINO_V)/ ANALOG_MAX;
+  averageV = inputV/(R2/(R1+R2));
+  return averageV;
+}
+void printS(){
+  averageV = sensorVoltage(readSensor = analogRead(PIN_SENSOR));
+  Serial.print("Tensão DC medida: ");
+  Serial.print( averageV,2); //Imprime com duas casas depois da vírgula
+  Serial.println("V");
+  delay(1000); 
+}
 
 void step1(){
   digitalWrite(IN1,LOW);
@@ -90,6 +109,7 @@ void setup(){
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
+  pinMode(PIN_SENSOR, INPUT);
 
   WiFi.begin(ssid, password);
 
@@ -104,7 +124,7 @@ void setup(){
 
   String input = payload;
   
-  StaticJsonDocument<1024> doc;
+  StaticJsonDocument<1024 > doc;
 
   DeserializationError err = deserializeJson (doc, input);
 
@@ -194,11 +214,22 @@ void setup(){
 }
 
 void loop() {
+
+  printS();
   timeClient.update();
-  hora= timeClient.getFormattedTime();
+  hora = timeClient.getFormattedTime();
   Serial.println(hora);
   delay(1000);
   Serial.println(stepTime);
+
+
+  if (hora > stepTimeUtc){
+    step1();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+  }
   if(hora == stepTimeUtc){
     step1();
     passo = timestep(stepTime, timetostep);
@@ -206,13 +237,28 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  
+  if (hora > stepTimeUtc){
+    step2();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+  }
   if(hora == stepTimeUtc){
     step2();
     passo = timestep(stepTime, timetostep);
     timestep(stepTime, timetostep);
     stepTime = passo;
     Serial.println(passo);
-    
+  }
+  
+  if (hora > stepTimeUtc){
+    step3();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
   }
   if(hora == stepTimeUtc){
     step3();
@@ -220,6 +266,14 @@ void loop() {
     timestep(stepTime, timetostep);
     stepTime = passo;
     Serial.println(passo);
+  }
+  
+  if (hora > stepTimeUtc){
+    step4();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
   }
   if(hora == stepTimeUtc){
     step4();
@@ -228,6 +282,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+    if (hora > stepTimeUtc){
+    step1();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step1();
     passo = timestep(stepTime, timetostep);
@@ -235,6 +296,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step2();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step2();
     passo = timestep(stepTime, timetostep);
@@ -242,6 +310,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step3();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step3();
     passo = timestep(stepTime, timetostep);
@@ -249,6 +324,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step4();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step4();
     passo = timestep(stepTime, timetostep);
@@ -256,6 +338,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step1();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step1();
     passo = timestep(stepTime, timetostep);
@@ -263,13 +352,26 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step2();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step2();
     passo = timestep(stepTime, timetostep);
     timestep(stepTime, timetostep);
     stepTime = passo;
     Serial.println(passo);
-  }
+  }if (hora > stepTimeUtc){
+    step3();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step3();
     passo = timestep(stepTime, timetostep);
@@ -277,6 +379,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step4();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step4();
     passo = timestep(stepTime, timetostep);
@@ -284,6 +393,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step1();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step1();
     passo = timestep(stepTime, timetostep);
@@ -291,6 +407,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step2();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step2();
     passo = timestep(stepTime, timetostep);
@@ -298,6 +421,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step3();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step3();
     passo = timestep(stepTime, timetostep);
@@ -305,6 +435,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step4();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step4();
     passo = timestep(stepTime, timetostep);
@@ -312,6 +449,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step1();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step1();
     passo = timestep(stepTime, timetostep);
@@ -319,6 +463,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step2();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step2();
     passo = timestep(stepTime, timetostep);
@@ -326,6 +477,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step3();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step3();
     passo = timestep(stepTime, timetostep);
@@ -333,6 +491,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step4();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step4();
     passo = timestep(stepTime, timetostep);
@@ -340,6 +505,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step1();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step1();
     passo = timestep(stepTime, timetostep);
@@ -347,6 +519,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step2();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step2();
     passo = timestep(stepTime, timetostep);
@@ -354,6 +533,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step3();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step3();
     passo = timestep(stepTime, timetostep);
@@ -361,6 +547,13 @@ void loop() {
     stepTime = passo;
     Serial.println(passo);
   }
+  if (hora > stepTimeUtc){
+    step4();
+    passo = timestep(stepTime, timetostep);
+    timestep(stepTime, timetostep);
+    stepTime = passo;
+    delay(500);
+    }
   if(hora == stepTimeUtc){
     step4();
     passo = timestep(stepTime, timetostep);
