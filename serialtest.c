@@ -1,17 +1,26 @@
 #include <stdio.h>
 #include<stdlib.h>
 #include<unistd.h>
+#include<string.h>
 int main()
 {
-    char* str[] = {"http://api.openweathermap.org/data/2.5/weather?id=3397277&appid=7d103cfe921d9a5bfcf551a90513f265"};  //Random data we want to send
+    char str[30] ;  //Random data we want to send
     FILE *file;
-    file = fopen("/dev/ttyUSB0","w");  //Opening device file
+    file = fopen("/dev/ttyUSB0","r");  //Opening device file
     int i = 0;
-
-    for(i = 0 ; i < 1 ; i++)
+    float dados [100];
+    char final[30];
+    for(i=0; i < 100; i++)
     {
-        fprintf(file,"%s",str[i]); //Writing to the file
-        sleep(1);
+        
+        fscanf(file,"%f", *str ); //Writing to the fileR
+        dados[i]=strtod(const char *str,char **final)
+        //printf("%f\n", str);
+     
     }
+     for(i=0;i<100;i++)
+     {
+         printf("%f\n",dados[i]);
+     }   
     fclose(file);
 }
