@@ -28,10 +28,12 @@
   long timetostep;
   long stepTime;
   long passo;
-  const long utcOffsetInSeconds = -10800;
+  int timezone;
+  long utcOffsetInSeconds = -10800;
   float inputV = 0.0;
   float averageV = 0.0;
   int readSensor = 0;
+
 
 
 // Define NTP Client to get time
@@ -49,7 +51,7 @@ void printS(){
   Serial.print("Tensão DC medida: ");
   Serial.print( averageV,2); //Imprime com duas casas depois da vírgula
   Serial.println("V");
-  delay(1000); 
+  delay(500); 
 }
 
 void step1(){
@@ -218,52 +220,8 @@ void callapi (){
     http.end(); //Close connection
   }
 }
-long timestep(long sys_sunrise, long timetostep){
-  long stepTimeUnix = sys_sunrise-10800+timetostep;
-
-  sprintf(stepTimeUtc, "%02d:%02d:%02d", hour(stepTimeUnix), minute(stepTimeUnix), second(stepTimeUnix));
-  Serial.println(stepTimeUtc);
-  return  stepTimeUnix+10800;
-  }
-
-void convertsunsetUtc(){
-  long sunsetUnix = sys_sunset-10800;
-
-  sprintf(sunsetUtc, "%02d:%02d:%02d", hour(sunsetUnix), minute(sunsetUnix), second(sunsetUnix));
-  Serial.println(sunsetUtc);
-  
-}
-
-void backtostart(){
-  long backto = sys_sunset-10800+120;
-
-  sprintf(back, "%02d:%02d:%02d", hour(backto), minute(backto), second(backto));
-  Serial.println(back);
-  
-}
-
-void setup(){
-  Serial.begin(115200);
-  
-  
-  pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT);
-  pinMode(IN4, OUTPUT);
-  pinMode(PIN_SENSOR, INPUT);
-
-  WiFi.begin(ssid, password);
-
-  while ( WiFi.status() != WL_CONNECTED ) {
-    delay (1000);
-    Serial.print ( "Conectando...\n" );
-  }
-
-  timeClient.begin();
-
-  callapi();
-
-  String input = payload;
+void deserializejson(){
+   String input = payload;
   
   StaticJsonDocument<1024 > doc;
 
@@ -323,15 +281,62 @@ void setup(){
   sys_sunrise = sys["sunrise"]; // 1483776245
   sys_sunset = sys["sunset"]; // 1483805443
 
+  timezone = doc["timezone"];
   long id = doc["id"]; // 2643743
   const char* name = doc["name"]; // "London"
   int cod = doc["cod"]; // 200
   
+  Serial.println(timezone);
   Serial.println(sys_sunrise);
   Serial.println(sys_sunset);
+}
+long timestep(long sys_sunrise, long timetostep){
+  long stepTimeUnix = sys_sunrise + timezone + timetostep;
 
-  unsigned long sunrise = sys_sunrise-10800;
-  unsigned long sunset = sys_sunset-10800;
+  sprintf(stepTimeUtc, "%02d:%02d:%02d", hour(stepTimeUnix), minute(stepTimeUnix), second(stepTimeUnix));
+  Serial.println(stepTimeUtc);
+  return  stepTimeUnix-timezone;
+  }
+
+void convertsunsetUtc(){
+  long sunsetUnix = sys_sunset+timezone;
+
+  sprintf(sunsetUtc, "%02d:%02d:%02d", hour(sunsetUnix), minute(sunsetUnix), second(sunsetUnix));
+  Serial.println(sunsetUtc);
+  
+}
+
+void backtostart(){
+  long backto = sys_sunset+timezone+120;
+
+  sprintf(back, "%02d:%02d:%02d", hour(backto), minute(backto), second(backto));
+  Serial.println(back);
+  
+}
+
+void setup(){
+  Serial.begin(115200);
+   
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(PIN_SENSOR, INPUT);
+
+  WiFi.begin(ssid, password);
+
+  while ( WiFi.status() != WL_CONNECTED ) {
+    delay (1000);
+    Serial.print ( "Conectando...\n" );
+  }
+
+  timeClient.begin();
+  callapi();
+  deserializejson();
+ 
+
+  unsigned long sunrise = sys_sunrise+timezone;
+  unsigned long sunset = sys_sunset+timezone;
   
   char srise[32];
   sprintf(srise, "%02d:%02d:%02d", hour(sunrise), minute(sunrise), second(sunrise));
