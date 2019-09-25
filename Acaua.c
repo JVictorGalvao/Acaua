@@ -7,9 +7,9 @@
             char *tok;
             int c,t=0;
             char *id;
-            char str1[100]="http://api.openweathermap.org/data/2.5/weather?id=";
-            char str2[100]="&appid=7d103cfe921d9a5bfcf551a90513f265";
             char *link [101];
+            char apilink [97] = "http://api.openweathermap.org/data/2.5/weather?id=";
+            char apikey [] = "&appid=7d103cfe921d9a5bfcf551a90513f265";
 
 typedef struct {
     int id;
@@ -77,13 +77,10 @@ void bemvindo(){
 }
 char concatenarlink (char *id){
     
-    char link [97] = "http://api.openweathermap.org/data/2.5/weather?id=";
-    char apikey [] = "&appid=7d103cfe921d9a5bfcf551a90513f265";
+    strcat(apilink,id);
+    strcat(apilink, apikey);
 
-    strcat(link,id);
-    strcat(link, apikey);
-
-    return printf("%s\n", link);
+    return printf("%s\n", apilink);
 }
 
 /*void abriraquivo(){
