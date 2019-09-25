@@ -2,23 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-            FILE *fp;
-            char cidade[101], linha[2001];
-            char *tok;
-            int c,t=0;
-            char *id;
-            char *link [101];
-            char apilink [97] = "http://api.openweathermap.org/data/2.5/weather?id=";
-            char apikey [] = "&appid=7d103cfe921d9a5bfcf551a90513f265";
+char *id;
 
-typedef struct {
+
+
+/*typedef struct {
     int id;
     char cidade [50];
     char pais [3];
     long day;
     long sunrise;
     long sunset;
-} tCidade;
+} tCidade;*/
 
 int TiraBarraN(char *v){
     int i;
@@ -30,6 +25,14 @@ int TiraBarraN(char *v){
 }
 
 void BuscaCidade(){
+    FILE *fp;
+    char cidade[101], linha[2001];
+    char *tok;
+    int c,t=0;
+    char str1[100]="http://api.openweathermap.org/data/2.5/weather?id=";
+    char str2[100]="&appid=7d103cfe921d9a5bfcf551a90513f265";
+    char *id;
+
     
     fp = fopen("citylist.csv", "r");
     if (!fp){
@@ -39,7 +42,7 @@ void BuscaCidade(){
     printf("Digite a Cidade: ");
     fgets(cidade,101,stdin);
     TiraBarraN(cidade);
-    fgets(linha,2001,fp);
+    fgets(linha,2001,fp); //Pula o cabeçalho
     while(1){
         fgets(linha,2001,fp);
         if(feof(fp))
@@ -58,7 +61,10 @@ void BuscaCidade(){
 
     }
     if(t==1){
+        strcat(str1,id);
+        strcat(str1,str2);
         printf("%s\n",id);
+        puts(str1);
     }
     else
         puts("Cidade nao encontrada");
@@ -80,7 +86,10 @@ void bemvindo(){
 }
 char concatenarlink (char *id){
     
-    strcat(apilink,id);
+    char apilink [97] = "http://api.openweathermap.org/data/2.5/weather?id=";
+    char apikey [] = "&appid=7d103cfe921d9a5bfcf551a90513f265";
+
+    strcat(apilink, id);
     strcat(apilink, apikey);
 
     return printf("%s\n", apilink);
@@ -109,7 +118,7 @@ char concatenarlink (char *id){
 
 
 int main (void){
-
+    
     int opcao;
 
     while(1){
