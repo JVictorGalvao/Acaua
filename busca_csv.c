@@ -57,7 +57,7 @@ int main(void){
         printf("%s\n",id);
         puts(str1);
         *link = str1;
-        printf("%s\n", *link);
+        //printf("%s\n", *link);
     }
     else
         puts("Cidade nao encontrada");
@@ -69,7 +69,7 @@ int main(void){
     file = fopen("/dev/ttyUSB0","w");  //Opening device file
     int i = 0;
 
-    for(i = 0 ; i < 1 ; i++)
+    /*for(i = 0 ; i < 1 ; i++)
     {
         sleep(1);
         fprintf(file,"%s",link[i]); //Writing to the file
@@ -77,6 +77,6 @@ int main(void){
     }
     fclose(file);
 
-
+*/
     return 0;
 }

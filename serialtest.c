@@ -4,23 +4,21 @@
 #include<string.h>
 int main()
 {
-    char str[30] ;  //Random data we want to send
+    char *str[30] ;  //Random data we want to send
     FILE *file;
     file = fopen("/dev/ttyUSB0","r");  //Opening device file
     int i = 0;
-    float dados [100];
-    char final[30];
-    for(i=0; i < 100; i++)
-    {
-        
-        fscanf(file,"%f", *str ); //Writing to the fileR
-        dados[i]=strtod(const char *str,char **final)
-        //printf("%f\n", str);
-     
+
+    while(i<10){
+        char ar[5];
+        int r = fread(ar, sizeof("amendoin"), 5, file);
+        printf("%s", ar);
+        if (r == 5){
+            break;
+        }
+        i++;
     }
-     for(i=0;i<100;i++)
-     {
-         printf("%f\n",dados[i]);
-     }   
+       // fscanf(file,"%s", str[i] ); //Writing to the fileR
+        //rintf("%s\n", *str);
     fclose(file);
 }
