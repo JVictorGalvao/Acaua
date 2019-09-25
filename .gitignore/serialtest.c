@@ -21,4 +21,4 @@ int main()
        // fscanf(file,"%s", str[i] ); //Writing to the fileR
         //rintf("%s\n", *str);
     fclose(file);
-}
+}test
