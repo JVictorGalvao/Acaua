@@ -1,4 +1,4 @@
-#include <NTPClient.h>
+#include <NTPClient.h>           
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <ESP8266HTTPClient.h>
@@ -321,7 +321,7 @@ void backtostart(){
   //Serial.println(back);
 }
 
-void serial(){
+/*void serial(){
   if(Serial.available()>0)
     {
       input=Serial.read();
@@ -329,7 +329,7 @@ void serial(){
             
       Serial.print(mensagem);
     }
-  }
+  }*/
 
 void setup(){
   Serial.begin(115200);
