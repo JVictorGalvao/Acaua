@@ -15,6 +15,9 @@ typedef struct {
     int id;
     char cidade [50];
     char pais [3];
+    long day;
+    long sunrise;
+    long sunset;
 } tCidade;
 
 int TiraBarraN(char *v){
