@@ -3,17 +3,10 @@
 #include <string.h>
 
 char *id;
-
-
-
-/*typedef struct {
-    int id;
-    char cidade [50];
-    char pais [3];
-    long day;
-    long sunrise;
-    long sunset;
-} tCidade;*/
+char linkdacidade [100];
+float dados [100];
+FILE *tensao;
+int num = 0;
 
 int TiraBarraN(char *v){
     int i;
@@ -63,11 +56,12 @@ void BuscaCidade(){
     if(t==1){
         strcat(str1,id);
         strcat(str1,str2);
-        printf("%s\n",id);
-        puts(str1);
+        //printf("%s\n",id);
+        strcpy(linkdacidade,str1);
+        puts("Cidade encontrada.");
     }
     else
-        puts("Cidade nao encontrada");
+        puts("Cidade nao encontrada.");
     
     fclose(fp);
 }
@@ -75,51 +69,136 @@ void BuscaCidade(){
 void ExibeMenu(){
     printf("----------------------Menu----------------------\n"
         "\t1 - Buscar cidade\n"
-        "\t2 - Concatenar link\n"
-        "\t3 - Salvar cidade \n"
-        "\t4 - Ver cidades salvas\n"
+        "\t2 - Exibir link\n"
+        "\t3 - Abrir arquivo com tensoes\n"
+        "\t4 - Opcoes com a tensao\n"
         "\t5 - Sair\n");
+}
+void ExibeMenu1(){
+    printf("----------------------Menu----------------------\n"
+        "\t\t1 - Media total\n"
+        "\t\t2 - Media por hora\n"
+        "\t\t3 - Soma total\n"
+        "\t\t4 - Voltar\n");
 }
 
 void bemvindo(){
-    puts("Bem vindo ao programa");
-}
-char concatenarlink (char *id){
-    
-    char apilink [97] = "http://api.openweathermap.org/data/2.5/weather?id=";
-    char apikey [] = "&appid=7d103cfe921d9a5bfcf551a90513f265";
-
-    strcat(apilink, id);
-    strcat(apilink, apikey);
-
-    return printf("%s\n", apilink);
+    puts("Bem-vindo ao programa");
 }
 
-/*void abriraquivo(){
-    listadecidades = fopen("Listadecidades.txt", "r");
-    if (listadecidades == NULL){
+void obtertensao(){
+    char ch;
+    char linha [100];
+    int c, i;
+    char *tok;
+    tensao = fopen("tensao.txt", "r");
+    if (tensao == NULL){
         puts("Houve um erro ao abrir o arquivo");
     }else{
         puts("Arquivo aberto com sucesso");
     }
-}*/
+    num = 0;
+    while( (ch=fgetc(tensao))!= EOF ){
+        if(ch == '\n')
+            num++;
+    }
+    rewind(tensao);
+    //printf("%d\n", num);
+    i=0;
+    while(1){
+        fgets(linha, 2001, tensao);
+        if (feof(tensao)){
+            break;
+        }
+        c = 0;
+        tok = strtok(linha, ">");
+       
+        while (c != 1){
+            
+            tok = strtok(NULL, ">");
+            c++;
+            //printf( " %s\n", tok );
+            dados[i] = strtod(tok, NULL);
+            i++;
+        }
+    }
+    /*for(i=0; i<num; i++){
+        printf("%f\n", dados[i]);
+    }*/
+}
 /*int contalinhas(FILE *arquivo){
+    arquivo = fopen("tensao.txt", "r");
     char ch;
     int num = 0;
     while( (ch=fgetc(arquivo))!= EOF ){
         if(ch == '\n')
             num++;
     }
-    return printf("%d\n", num+1);
+    return printf("%d\n", num);
 }*/
 /*void fechararquivo(){
     fclose (listadecidades);
 }*/
+void opcaotensao(){
+    int opcao1;
+    int i, intervalo;
+    float media, soma=0;
+    while(1){
+        printf("Digite uma opcao: ");
+        scanf("%d%*c", &opcao1);
 
+        if (opcao1 == 4){
+            break;
+        }   
+        switch (opcao1){
+        case 1:
+            soma =0;
+            for (i=0; i<num; i++){
+                soma += dados[i];
+            }
+            media = soma/num;
+            printf("%.2f V\n", media);
+            break;
+        case 2:
+            printf("Dados de qual intervalo de hora? ");
+            scanf("%d", &intervalo);
+            if (intervalo == 1){
+                soma = 0;
+                for(i=0;i<6;i++){
+                    soma += dados[i];
+                }
+                media = soma/6;
+                printf("%.2f V\n", media);
+            }
+            if (intervalo == 2){
+                soma = 0;
+                for(i=6;i<12;i++){
+                    soma += dados[i];
+                }
+                media = soma/6;
+                printf("%.2f V\n", media);
+            }
+            if (intervalo != 1 || intervalo !=2){
+                puts("Intervalo invalido");
+            }
+            break;
+        case 3:
+            soma = 0;
+            for (i=0; i<num; i++){
+                soma += dados[i];
+            }
+            printf("%.2f V\n", soma);
+            break;
+        default:
+            puts("Opcao Invalida");
+        break;
+        }
+    }       
+}
 
 int main (void){
     
-    int opcao;
+    int opcao, opcao1;
 
     while(1){
         bemvindo();
@@ -136,11 +215,14 @@ int main (void){
             BuscaCidade();
             break;
         case 2:
-            concatenarlink(id);
+            puts(linkdacidade);
             break;
         case 3:
+            obtertensao(tensao);
             break;
         case 4:
+            ExibeMenu1();
+            opcaotensao();
             break;
         default:
             puts("Opcao invalida");
