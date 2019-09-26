@@ -75,8 +75,7 @@ void ExibeMenu(){
         "\t5 - Sair\n");
 }
 void ExibeMenu1(){
-    printf("----------------------Menu----------------------\n"
-        "\t\t1 - Media total\n"
+    printf("\t\t1 - Media total\n"
         "\t\t2 - Media por hora\n"
         "\t\t3 - Soma total\n"
         "\t\t4 - Voltar\n");
