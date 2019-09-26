@@ -26,16 +26,14 @@ void BuscaCidade(){
     char str2[100]="&appid=7d103cfe921d9a5bfcf551a90513f265";
     char *id;
 
-    
     fp = fopen("citylist.csv", "r");
     if (!fp){
         puts("Erro ao abrir");
     }
-
     printf("Digite a Cidade: ");
     fgets(cidade,101,stdin);
     TiraBarraN(cidade);
-    fgets(linha,2001,fp); //Pula o cabeçalho
+    fgets(linha,2001,fp);
     while(1){
         fgets(linha,2001,fp);
         if(feof(fp))
@@ -51,7 +49,6 @@ void BuscaCidade(){
             t++;
             break;
         }
-
     }
     if(t==1){
         strcat(str1,id);
@@ -62,7 +59,6 @@ void BuscaCidade(){
     }
     else
         puts("Cidade nao encontrada.");
-    
     fclose(fp);
 }
 
@@ -102,7 +98,6 @@ void obtertensao(){
             num++;
     }
     rewind(tensao);
-    //printf("%d\n", num);
     i=0;
     while(1){
         fgets(linha, 2001, tensao);
@@ -110,34 +105,17 @@ void obtertensao(){
             break;
         }
         c = 0;
-        tok = strtok(linha, ">");
-       
+        tok = strtok(linha, ">"); 
         while (c != 1){
-            
             tok = strtok(NULL, ">");
             c++;
-            //printf( " %s\n", tok );
             dados[i] = strtod(tok, NULL);
             i++;
         }
     }
-    /*for(i=0; i<num; i++){
-        printf("%f\n", dados[i]);
-    }*/
+    fclose (tensao);
 }
-/*int contalinhas(FILE *arquivo){
-    arquivo = fopen("tensao.txt", "r");
-    char ch;
-    int num = 0;
-    while( (ch=fgetc(arquivo))!= EOF ){
-        if(ch == '\n')
-            num++;
-    }
-    return printf("%d\n", num);
-}*/
-/*void fechararquivo(){
-    fclose (listadecidades);
-}*/
+
 void opcaotensao(){
     int opcao1;
     int i, intervalo;
@@ -227,8 +205,6 @@ int main (void){
             puts("Opcao invalida");
             break;
         }
-
-    }
-    
+    }   
     return 0;
 }
