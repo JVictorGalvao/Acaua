@@ -178,7 +178,7 @@ void opcaotensao(){
                 media = soma/6;
                 printf("%.2f V\n", media);
             }
-            if (intervalo != 1 || intervalo !=2){
+            if (intervalo != 1 && intervalo !=2){
                 puts("Intervalo invalido");
             }
             break;
