@@ -53,7 +53,6 @@ void BuscaCidade(){
     if(t==1){
         strcat(str1,id);
         strcat(str1,str2);
-        //printf("%s\n",id);
         strcpy(linkdacidade,str1);
         puts("Cidade encontrada.");
     }
